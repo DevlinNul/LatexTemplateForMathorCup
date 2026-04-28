@@ -1,0 +1,3 @@
+pandoc <src file> -o <output file> --from markdown+tex_math_single_backslash+raw_tex
+
+pandoc生成的tex文件要处理一下，所有的section，subsection，subsubsection之类的都要换成additional系列

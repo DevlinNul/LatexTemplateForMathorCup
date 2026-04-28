@@ -1,0 +1,274 @@
+\documentclass{MMCStyle}
+\usepackage[minted, multicol]{MyTemplate} % 如果要用minted的话，要自己加-shell-escape
+% \usepackage{MyTemplate}
+\usepackage{zhlipsum}
+\usepackage{lipsum}
+\usepackage[version=4]{mhchem}
+
+\bianhao{MC1111111}
+\tihao{X}
+\timu{起啥题目呢}
+\keyword{你觉得什么关键词比较合适；不知道；那就乱写吧}
+% \bibliographystyle{gbt7714-numerical}
+\addbibresource{ref.bib}
+
+\graphicspath{{./images/}}
+
+
+\makeatletter
+\newcommand{\mysupercite}[1]{\textsuperscript{\cite{#1}}} % 这种做法虽然有点丑陋，但是胜在简单易行。因为丑陋，所以没放自定义宏包`MyTemplate`里
+\makeatother
+
+\setcounter{tocdepth}{2} % 目录深度，自己调
+
+\renewcommand{\tabularxcolumn}[1]{m{#1}} % 1. 让所有X列垂直居中
+\newcolumntype{C}{>{\centering\arraybackslash}X} % 2. 定义水平居中的X列
+
+\begin{document}
+% \nocite{*}
+
+% 摘要默认小四号字 \zihao{-4} ，如果内容比较多一页放不下的话，自己去 `MMCStyle.cls` 里改字号，比如改成 \zihao{5} 。
+\begin{abstract}
+
+摘要开始。
+
+\textbf{针对问题一：}\lipsum[1]
+
+\textbf{针对问题二：}\zhlipsum[2]
+
+\textbf{针对问题三：}为什么还要写摘要。
+
+我不想写摘要，摘要要认真写。% 注意\end{abstract}前面不能空行
+\end{abstract}
+
+
+
+% 取消目录页码
+\tableofcontents\newpage
+\clearpage
+\pagenumbering{arabic}
+\pagestyle{fancy}
+% 恢复默认的页面样式
+
+
+
+\section{问题重述}
+
+\subsection{问题背景}
+
+\zhlipsum[4]
+
+\subsection{问题提出}% 不一定非要按照这个格式，前面怎么写自行参考多篇优秀论文，但实际上是有自由度的。
+
+阿巴阿巴。
+
+\begin{description}
+  \item[\bfseries 问题一]随便写啦。
+  \item[\bfseries 问题二]也许吧。
+  \item[\bfseries 问题三]不会，靠建模手了。
+  \item[\bfseries 问题四]\LaTeX{}编译缓慢没办法，背负着历史的包袱。感兴趣的话可以试试 Typst ，秒出 PDF 。
+\end{description}
+
+\section{问题分析}
+
+\subsection{总体分析}
+
+\lipsum[4]
+
+\subsection{问题一的分析}
+
+\zhlipsum[2]
+
+\subsection{问题二的分析}
+
+问题二的分析已经被概括为 $\ee^{\ii \theta} = \cos\theta + \ii \sin\theta$ 了，或者 $\displaystyle\dv{}{x} \e^x = \ee^x = \exp\lr(x)$ 。
+
+\subsection{问题三的分析}
+
+\lipsum[4]
+
+\section{模型假设}
+
+为了我的叽里咕噜看上去高级一点，我们做了如下假设：
+
+\begin{enumerate}
+  \item 我觉得 Markdown 不好用。
+  \item 我觉得 \LaTeX 不是那么好用。
+  \item 我正在学习 Typst 。
+  \item Word 采用的数学字体的排版效果看上去确实没有 Computer Modern 或者 Latin Modern 的好看。
+\end{enumerate}
+
+
+
+\section{符号说明}
+
+\inline{siunitx} 宏包和 \inline{physics} 宏包在 \inline{qty} 上的冲突也是出了名的，但是我就是不用 \inline{physics2} 宏包。
+
+\begin{table}[!htbp]
+\centering
+\caption{快看，这是第一个表格的 caption}
+\label{table:symbols}
+\footnotesize
+\begingroup
+\begin{tabularx}{\textwidth}{@{}XX@{}}
+\toprule
+\textbf{表头} & \textbf{标头} \\
+\midrule
+你好 & 世界 \\
+$\partial D$ & $\mathbb{I}\lr(x>0)$ \\
+\bottomrule
+\end{tabularx}
+\endgroup
+\vspace{0.4em}
+
+\noindent\footnotesize{\textbf{符号规范说明：}写作要规范一点，直立体表达一个变量，斜体是隐式乘法。}
+\end{table}
+
+
+
+\section{问题一模型的建立与求解}
+
+\ce{Na+} 在我创办的期刊上指出：“拒绝半桶水的水平”\mysupercite{book01}。在使用单位 $\unit{\kilo\m\per\s}$ 下，一个不知名的式子
+\[
+  \zeta_{\mathrm{op}} + \e = \ii
+\]
+其中， $\e$ 为自然常数。
+
+我\mysupercite{deepseek}曾提到： AI 并非民事行为能力人，只不过是一个高级点的搜索引擎，不应该放进参考文献的条目里。
+
+\lipsum[3]
+
+\subsection{副标题自己定}
+
+$\unit{\m\per\s}$ 和 $\SI{100e-6}{\m}$ 好看。
+
+\zhlipsum[3]
+
+\begin{table}[!htbp]
+\centering
+\caption{加油}
+\label{table:好看的}
+\begin{tabular}{ccc}
+\toprule
+三 & 三 & \textbf{三} \\
+\midrule
+线 & 线 & 线 \\
+表 & 表 & 表 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\cref{table:好看的} 是好看的。
+
+\begin{figure}[!htbp]
+\centering
+\begin{minipage}[b]{0.48\textwidth}
+\centering
+\footnotesize
+\includegraphics[width=\textwidth]{无标题1.png}
+\caption{无标题 1}
+\label{figure:untitled 1}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.48\textwidth}
+\centering
+\footnotesize
+\includegraphics[width=\textwidth]{无标题2.png}
+\caption{无标题 2}
+\label{figure：untitled 2}
+\end{minipage}
+\end{figure}
+
+\zhlipsum[6]
+
+如\cref{figure:untitled 1} 所示，阿巴阿巴。
+
+\begin{equation}
+\sin[2]\theta + \cos^2\theta = 1
+\end{equation}
+
+终于写完了，制作不易，觉得有用的话记得点个 \inline{Star} 。
+
+\subsubsection{快来快来数一数，二四六七八}
+
+\lipsum[5]
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{无标题1.png}
+\caption{懒得写了}
+\label{figure:你好压}
+\end{figure}
+
+如\cref{figure:你好压} 所示，我已经亚历山大了。
+
+\subsubsection{Bad 略略略}
+
+\zhlipsum[2]
+
+\subsection{计入 PDF 书签的章节命令尽量只用纯文本 plain text}
+
+\section{下划线最容易踩坑了，吗}
+
+长 \inline{my\_bot} 得 \inline{is\_true} 好 \inline{不} 丑。
+
+\begin{equation}\label{equation:important}
+  a + b = c
+\end{equation}
+
+\subsection{问题一小结}
+
+后面\cref{equation:important} 不给那么详细了。
+
+
+\section{问题二的模型建立与求解}
+
+\subsection{略略略}
+
+已。
+
+\subsection{略}
+
+经
+
+\subsubsection{没写}
+
+完了。网络\mysupercite{web01}里面啥都有。
+
+\section{模型的优缺点分析与优化}
+
+章节结构随便改，也没有谁说优缺点\mysupercite{paper01}分析是必须有的。
+
+\subsection{问题一模型的分析与改进}
+
+\subsubsection{也许已经很完美了吧}
+
+Good 好。
+
+% \clearpage
+\phantomsection
+\addcontentsline{toc}{section}{参考文献}
+% \bibliography{ref}
+\printbibliography[title={参考文献}] % 输出列表
+
+\appendix
+
+\section*{附录}
+
+% \section*{\LARGE 附录}\addcontentsline{toc}{section}{附录}
+
+柯西（可惜）附件 4 \footnote{MathorCup 数学应用挑战赛人工智能工具使用规定（试行）}第四节要求不被遵守，本文将使用的 AI 放入了参考文献的条目中。
+
+\inline{minted} 提供的参数请自行检索，例如 \inline{breaklines} 。
+
+想用不需要 \inline{-shell-escape} 的 \inline{listings} 也行，看个人方便程度和要求以及喜好。
+
+\section{单栏示例}
+
+\input{code/code_unary.tex}
+
+\section{双栏示例}
+
+\input{code/code_binary.tex}
+
+\end{document}

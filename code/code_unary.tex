@@ -1,0 +1,233 @@
+\begin{minted}[fontsize=\tiny,linenos,breaklines,frame=single]{typst}
+#import "@preview/physica:0.9.8": *
+#import "@preview/theorion:0.4.1": *
+#import cosmos.fancy: *
+// #import cosmos.rainbow: *
+// #import cosmos.clouds: *
+#show: show-theorion
+
+
+#let hblank = { $wide wide wide$.body }
+#let sgn = math.op("sgn")
+#let my-example = definition-box.with(breakable: true)
+#let my-proof = corollary-box.with(breakable: true)
+// 虚数单位i
+#let ii = { $upright(i)$.body }
+// 自然常数e
+#let ee = { $upright(e)$.body }
+#show math.equation: set text(features: ("cv01",))
+// 定义可跨页横线，支持自定义样式
+#let crosspage-hline(..args) = {
+  // 提取 stroke 参数，默认为 1pt 黑线
+  let stroke = args.named().at("stroke", default: 1pt + orange)
+
+  // 取消首行缩进
+  set par(first-line-indent: 0pt)
+
+  // 绘制横线，使用 box 确保宽度准确
+  box(
+    width: 100%,
+    height: 0.6em, // 类似 baseline=-0.6ex 的垂直调整
+    align(horizon, line(length: 100%, stroke: stroke)),
+  )
+
+  parbreak()
+}/*
+ // 使用示例
+ #crosspage-hline()
+ #crosspage-hline(stroke: 2pt + red)
+ #crosspage-hline(stroke: (thickness: 1pt, paint: blue, dash: "dashed")) */
+
+
+#import "@preview/xarrow:0.4.0": xarrow
+#let xlongequal = xarrow.with(sym: sym.eq)
+#let dcase(title: none, body) = {
+  grid(
+    columns: (auto, 1fr),
+    gutter: 1em,
+    box(width: 2em, height: 2em, fill: rgb("#e8e8e8"), radius: 50%, align(center + horizon, strong(
+      $ note.grace $,
+    ))),
+    [
+      === #title
+      #body
+    ],
+  )
+}
+#let alternative-solution(title: "Alternative Solution", body) = {
+  grid(
+    columns: (auto, 1fr),
+    gutter: 1em,
+    box(width: 1em, height: 1em, fill: rgb("#779177"), radius: 10%, align(center + horizon, strong(
+      $ crossmark $,
+    ))),
+    [
+      === #title
+      #body
+    ],
+  )
+}
+
+#set page(
+  // 以A4纸为例，你可以改成其他尺寸或自定义width, height
+  paper: "a4",
+  // 让左右、上下边距都等于页面宽/高的7.5%，从而使版心占85%
+  margin: (x: 7.5%, y: 7.5%),
+)
+
+// 填充底色
+#set page(
+  fill: rgb("#FFF2E2FF"),
+)
+
+#set document(
+  title: "一些有跳跃间断点的函数的原函数",
+  author: "DevlinNul",
+)
+#set par(justify: true)
+#title()
+
+= 一些约定
+
+本文在求原函数时不会显式地写 $+C$ 。
+
+本文探讨的积分是勒贝格积分意义下的，即只考虑函数几乎处处（almost everywhere，即a.e.）的行为，而忽略函数在零测集上的行为。
+
+本文中限制函数的定义域只能是一个区间。
+
+本文采用的符号函数的定义为
+$
+  sgn x colon.eq cases(
+    1 & quad "if" x > 0,
+    0 & quad "if" x = 0,
+    -1 & quad "if" x < 0
+  )
+$
+
+本文中，分段常数函数指定义在一个区间上，导数几乎处处为零的函数。如定义在 $RR$ 上的 $sgn x, ceil(x), floor(x), round(x), 0, 1, 2, x-arctan(tan x)$ 等等（ $x-arctan(tan x)$ 作延拓处理，跳跃间断点处的函数值取某一个单侧极限值），其中，前四者分别称为“符号函数”、“向上取整函数”、“向下取整函数”、“四舍五入函数”。注意分段常数函数是包括了常数函数的。后文中，我们假定函数的跳跃间断点总能归结为分段常数函数的跳跃间断点。我们断言，一个实变函数的第一类间断点组成的集合一定是至多可数的，因而一定是零测集。
+
+在求原函数的过程中，将分段常数函数视为常数处理的步骤会用 $eq.star$ 标明。
+
+= 正文
+
+对于间断点仅含有第一类间断点（可去间断点和跳跃间断点）的函数，其定积分总是连续的。
+
+但我们在求其不定积分时，中间步骤可能由于将分段常数函数视为常数提取到积分号外之类的不等价的操作（如将 $sgn(x)$ 当做常数随意地提取到积分号外）导致最后算出来的结果可能仅在局部成立，而在全局不成立。在几乎处处的意义下，求原函数时我们不要求原函数 $F$ 在被积函数 $f$ 的跳跃间断点上满足 $F'=f$ ，只需要这个式子几乎处处成立即可。所以标准的做法是在被积函数的每一个连续区间里分别积分，在这样的每一个连续区间里，分段常数函数恰好分别是该区间上的常数；但这样得到的原函数的形式是分段的，不一定是定义域（限定为一个区间）上的绝对连续函数，从而无法利用牛顿--莱布尼茨公式（牛莱公式），这不是我们想要的。若我们需要得到绝对连续的原函数，还需要调整各个区间的常数，使得不同区间上得到的结果拼接（后文将称之为修正）成定义域上的绝对连续函数（可去间断点进行延拓处理，即补充定义函数值为极限值）。
+
+我们求不定积分时通常总是希望得到绝对连续的原函数，使得牛莱公式可用。既然标准的做法难以得到绝对连续的原函数，那我们就不必严格地按照标准做法去做。由于分段常数函数在不同的连续区间上的函数值的差值总是常数，所以我们逐区间积分再修正与这种做法是等效的：在定义域上将分段常数函数视为常数，得到的结果再进行连续性修正。我们对此给出简要的说明。
+
+#my-proof(title: "等效性证明")[
+  设 $A, D_1, D_2, dots, D_n$ 是 $D$ 的一个划分，即
+  $
+    cases(
+      limits(union.big)_(i=1)^(n) D_i union A = D,
+      forall i in NN^+ \, forall j in NN^+ comma i eq.not j ==> D_i inter D_j = emptyset,
+      forall i in NN^+ comma A inter D_i = emptyset
+    )
+  $
+  并且 $A$ 的测度 $mu(A) = 0$ ， $D_i$ 均为区间。
+  假设分段常数函数 $p(x)$ 满足
+  $
+    p(x) = cases(
+      p_1 comma quad x in D_1,
+      p_2 comma quad x in D_2,
+      dots.v,
+      p_n comma quad x in D_n
+    )
+  $
+  其中 $p_i$ 为某一实数， $n in NN^+$ 或者 $n->+oo$ 。
+
+  我们之所以能够将 $p(x)$ 的取值列出来，是因为我们断言了：任何实变函数的第一类间断点组成的集合一定是至多可数的。
+
+  由于我们假定了研究的函数的跳跃间断点总能归结为分段常数函数的跳跃间断点，于是对于 $D$ 上的连续函数 $f$，我们研究
+  $
+    integral p(x) dot f(x) dif x
+  $
+  的计算。之所以将被积函数直接写成乘积的形式，是因为积分运算的线性性满足
+  $
+    integral c f(x) dif x = c integral f(x) dif x, c "为某一实数"
+  $
+
+  于是在忽略原函数的绝对连续性的前提下
+  $
+    integral p(x) f(x) dif x & = cases(
+                                 p_1 integral f(x) dif x comma quad x in D_1,
+                                 p_2 integral f(x) dif x comma quad x in D_2,
+                                 dots.v,
+                                 p_n integral f(x) dif x comma quad x in D_n
+                               ) \
+                             & = p(x) integral f(x) dif x
+  $
+
+  于是在不考虑原函数的绝对连续性的前提下，分段常数函数可以视为常数自由进出积分号。而分段积分的方法最后需要进行连续性修正，将分段常数函数视为常数的做法最后也需要进行连续性修正，所以我们可以直接采取后者，以期简化运算。
+]
+需要指出的是，牛莱公式要求原函数是绝对连续的。但是我们的拼接操作最多只能保证得到的结果是连续的，是否绝对连续是由区间上函数的行为决定的。所以，我们只说进行连续性修正而不是绝对连续性修正。
+
+下面给出一些实例。
+
+#my-example(title: [求 $display(integral sgn x dif x)$ ])[
+  先将 $sgn x$ 视为常数，于是 $ integral sgn x dif x eq.star sgn x integral dif x = x sgn x $
+
+  然后检查得到的原函数的连续性。
+
+  记 $F colon.eq x sgn x$ 。由于 $sgn x$ 有唯一间断点 $x = 0$ ，而
+  $
+    display(lim_(x->0^+)F(x) &= 0 times 1 = 0) \
+    display(lim_(x->0^-)F(x) &= 0 times (-1) = 0)
+  $
+  于是 $display(lim_(x->0^+)F(x) = lim_(x->0^-)F(x))$ ，所以 $F$ 是连续的，无需连续性修正。
+]
+
+#my-example(title: [求 $display(integral ee^(-abs(x)) dif x)$ ])[
+  $
+    integral ee^(-abs(x)) dif x & = integral ee^(- sgn(x) dot x) dif x = integral (ee^(- sgn x))^x dif x \
+                                & eq.star (ee^(- sgn x))^x/(ln(ee^(-sgn x))) = ee^(-abs(x))/(-sgn x)
+  $
+  记 $display(F(x) = ee^(-abs(x))/(-sgn x))$ ，则
+  $
+    lim_(x->0^-) F(x) & = 1 \
+    lim_(x->0^+) F(x) & = -1
+  $
+  取
+  $
+    h(x) & = -display(lim_(x->0^+) F(x) - lim_(x->0^-) F(x))/2 dot sgn(x) \
+         & = sgn x
+  $
+  于是
+  $
+    overline(F)(x) = -ee^(-abs(x))/(sgn x) + sgn x
+  $
+  则 $overline(F)(x)$ 在 $x=0$ 处有可去间断点，可以补充定义 $overline(F)(0) = 0$ ，即可得到延拓到 $RR$ 的 $overline(F)(x)$ 。
+  值得注意的是，将 $overline(F)(x)$ 写成 $-ee^(-abs(x)) dot sgn x + sgn x$ ，即
+  $
+    overline(F)(x) = sgn x dot (1 - ee^(-abs(x)))
+  $
+  可以自动得到 $RR$ 上的连续函数。
+]
+
+#my-proof(
+  title: [证明：设 $A(x), B(x)$ 在 $x=0$ 的一个邻域上有定义， $display(F(x) = A(x)/(sgn x) + B(x))$ ，满足 $F(x)$ 在 $x=0$ 处有可去间断点，且 $display(B(0) = lim_(x->0)F(x))$ ，则延拓为在 $x=0$ 的一个邻域上连续的 $F(x)$ 为 $overline(F)(x) = A(x) dot sgn x + B(x)$ ],
+)[
+  由于 $F(x)$ 在 $x=0$ 处有可去间断点，故
+  $
+    lim_(x->0) F(x) colon.eq L
+  $
+  而 $overline(F)(0) = B(0) = L$ 。于是
+  $
+    lim_(x->0) F(x) = overline(F)(0)
+  $
+  由于 $forall x eq.not 0$ ，有 $display(sgn x = 1/(sgn x))$ ，于是
+  $
+    F(x) equiv overline(F)(x) , quad forall x eq.not 0
+  $
+  综上， $overline(F)(x)$ 为 $F(x)$ 在 $x=0$ 的一个邻域上的连续延拓。
+
+  #crosspage-hline()
+
+  但实际上，即便 $display(B(0) eq.not lim_(x->0) F(x))$ ，记 $display(L colon.eq lim_(x->0)F(x))$ ，也可以令 $hat(F)(x) colon.eq A(x)/(sgn x) + B(x) + L - B(0)$ ，则 $hat(F)(x)$ 为满足上述证明中的 $F(x)$ ，因为 $L - B(0)$ 为确定的某一常数。
+
+  而在不定积分中，一个原函数加上任意的实数得到的函数属于原函数族，故如果求原函数时得到题设的形式，可以直接将 $sgn x$ 从分母移到分子。
+]
+
+
+\end{minted}

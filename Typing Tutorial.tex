@@ -1,0 +1,146 @@
+% \documentclass[UTF8]{ctexart}
+\documentclass{MMCStyle}
+\usepackage[minted]{MyTemplate}
+% \usepackage{siunitx}
+
+% \title{\inline{LeeDo} 组2026年MathorCup论文撰写手册}
+% \author{}
+% \date{\today}
+
+\begin{document}
+% \maketitle
+\begin{center}
+\LARGE MathorCup论文撰写手册？\bigskip
+\end{center}
+
+\inline{DevlinNul} 自己写的规范，各位看官看看就好。
+
+如果论文是多人协作的话，能用 \inline{git} 的团队就尽量用吧。
+
+导言区需要包含的命令见附录。
+
+参考文献的编译请用 bibtex , biber 也许可以通过。
+
+\additionalSection{编码规范}
+
+\begin{enumerate}
+    \item 正文标点一律采用中文标点（全角），数学模式\textbf{中}的标点用英文标点。如\\
+      $\forall a, b \in\R$ ，有 $a^2 + b^2 > 0$ 。
+    \item 中文文本与标点之间不加空格，标点之间不加额外空格。
+    \item 中文、英文、数字之间用一个空格隔开，如\\
+      \inline{这是 1 段英文 English 示例。论文的英文是 article 。}\\
+      数字是否用数学模式不作要求。
+    \item 命令与文档文本之间用一个空格隔开，内联到正文中的无参数命令需补上空花括号。（如 \verb|\LaTeX| 应该写成 \verb|\LaTeX{}|）
+    \item 与括号相连的文本无需空格隔开。如 \inline{括号（文本 Text 不 need）空格} 。
+    \item 内联数学模式（行内公式）需与正文用空格隔开，如 \inline{正 $\int$ 文} 。
+    \item 缩进不作要求。
+    \item 表格原则上只允许使用全框表和三线表。
+\end{enumerate}
+
+
+\additionalSection{自定义的命令}
+
+\begin{enumerate}
+    \item 自然常数 $\e$ 需要使用直立体，可以使用命令 \verb|\e| 或者 \verb|\ee| 得到。
+    \item 虚数单位 $\ii$ 需要使用直立体，可以使用命令 \verb|\ii| 得到。
+    \item 物理量的单位使用 \inline{siuintx} 宏包得到，可用命令有 \verb|\num| 、 \verb|\unit| 和 \verb|\SI| ，不要使用 \verb|\qty| 。
+    \item 可自动放缩的括号除了使用 \verb|\left(\right)| 外，还可以使用 \verb|\lr()| 。不要使用 \inline{physics} 宏包的 \verb|\qty()| 命令。
+\end{enumerate}
+\begin{table}[!htbp]
+\centering
+\caption{自定义命令表，省略前缀反斜杠，连接词的数学模式是可选的}
+\begin{tabularx}{0.8\textwidth}{lYc}
+\toprule
+\textbf{符号} & \textbf{含义} & \textbf{渲染效果} \\
+\midrule
+\lstinline|lcm| & 最小公倍数 & $\lcm$ \\
+\lstinline|arcsinh| & 反双曲正弦 & $\arcsinh$ \\
+\lstinline|arccosh| & 反双曲余弦 & $\arccosh$ \\
+\lstinline|arctanh| & 反双曲正切 & $\arctanh$ \\
+\lstinline|arccoth| & 反双曲余切 & $\arccoth$ \\
+\lstinline|arcsech| & 反双曲正割 & $\arcsech$ \\
+\lstinline|arccsch| & 反双曲余割 & $\arccsch$ \\
+\lstinline|ld| & 以 2 为底的对数 & $\ld$ \\
+\lstinline|Cdot| & 比 \lstinline|cdot| 略大的点 & $\Cdot$ \\
+\lstinline|N| & 自然数集 & $\N$ \\
+\lstinline|Z| & 整数集 & $\Z$ \\
+\lstinline|Q| & 有理数集 & $\Q$ \\
+\lstinline|R| & 实数集 & $\R$ \\
+\lstinline|C| & 复数集 & $\C$ \\
+\lstinline|doesNotExist| & 不存在 & $\doesNotExist$ \\
+\lstinline|LHS| & 左边 & $\LHS$ \\
+\lstinline|RHS| & 右边 & $\RHS$ \\
+\lstinline|almostEverywhere| & 几乎处处 & $\almostEverywhere$ \\
+\lstinline|almostSurely| & 几乎总是 & $\almostSurely$ \\
+\lstinline|suchThat| & 使得 & $\suchThat$ \\
+\lstinline|eg| & 例如 & $\eg$ \\
+\lstinline|ie| & 即 & $\ie$ \\
+\lstinline|withoutLossOfGenerality| & 不失一般性 & $\withoutLossOfGenerality$ \\
+\lstinline|etal| & 以及其他人 & $\etal$ \\
+\lstinline|resp| & respectively & $\resp$ \\
+\lstinline|viz| & 即 & $\viz$ \\
+\lstinline|aka| & also known as & $\aka$ \\
+\lstinline|diff| & 微元符号（括号要自己加） & $\diff{}$ \\
+\lstinline|perm{2}{1}| & 排列数 & $\perm{2}{1}$ \\
+\lstinline|comb{2}{1}| & 组合数 & $\comb{2}{1}$ \\
+\lstinline|ii| & 虚数单位 & $\ii$ \\
+\lstinline|ee| & 自然常数 & $\ee$ \\
+\lstinline|sgn{x}| & 符号函数 & $\sgn{x}$ \\
+\lstinline|na| & Not Available & $\na$ \\
+% \lstinline|additionalSection| & section* & $\additionalSection$ \\
+% \lstinline|addtionalSubsection| & subsection* & $\addtionalSubsection$ \\
+% \lstinline|additionalSubsubsection| & subsubsection* &  \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+注： \verb|\gcd| 可以直接用。
+
+\begin{table}
+\centering
+\caption{常用命令，由 physics 宏包提供（省略前缀反斜杠）}
+\begin{tabularx}{0.8\textwidth}{lcY}
+\toprule
+\textbf{命令} & \textbf{效果} & \textbf{示例} \\
+\midrule
+\lstinline|eval{x}_s| & $\eval{x}_s$ & $\eval{\dfrac{f(x)}{g(y)}}_{\substack{
+  x = 0 \\
+  y = 1
+}}^{\mathrm{up}}$ \\
+\lstinline|derivative{y}{x}| & $\derivative{y}{x}$ & $\displaystyle\dv[2]{}{x}\lr(y z)$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\appendix
+
+\section{Miscellaneous}
+
+\inline{MyTemplate} 这个自定义宏包的开关和支持的完整命令请自行看 \inline{.sty} 文件，因为这是自用的宏包，并不打算发布的，所以没有 manual 。
+
+\section{导言区}
+
+% 只是需要写某一 Part 的话采用的导言区：
+\begin{solution}[只需要写某一 Part 的话采用的导言区：]
+\begin{minted}{latex}
+\documentclass{MMCStyle}
+\usepackage{MyTemplate}
+\end{minted}
+\end{solution}
+
+\begin{solution}[完整导言区：]
+\begin{minted}{latex}
+\documentclass{MMCStyle}
+\usepackage{MyTemplate}
+
+\bianhao{123456}
+\tihao{ABCDEFGHI}
+\timu{论文标题}
+\keyword{content；content；content}
+% \bibliographystyle{gbt7714-numerical}
+\addbibresource{ref.bib}
+\end{minted}
+\end{solution}
+
+\end{document}
+

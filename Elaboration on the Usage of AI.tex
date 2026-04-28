@@ -1,0 +1,95 @@
+% 记得最后改名为 `AI 工具使用详情说明`
+% 之所以这个文件用英文名是因为bibtex/biber似乎不支持含有中文的路径
+\documentclass{MMCStyle}
+\usepackage[multicol]{MyTemplate}
+
+\input{Preamble for Pandoc.tex}
+
+% \def\input@path{{dialog with AI}} % 可以设置多个路径
+
+\NewDocumentEnvironment{dialog}{O{untitled} O{false}}{%
+  \begin{solution}[#1]
+  \def\multicolSwitch{#2}%
+  \ifx\multicolSwitch\trueString
+    \begin{multicols}{2}
+  \fi
+}{%
+  \ifx\multicolSwitch\trueString
+    \end{multicols}
+  \fi
+  \end{solution}
+}
+
+% 定义字符串比较辅助命令（放在导言区）
+\def\trueString{true}
+\def\falseString{false}
+
+\bianhao{MC1111111}
+\tihao{X}
+\timu{参赛队 AI 工具使用详情说明}
+\keyword{AI 工具使用详情}
+% \bibliographystyle{gbt7714-numerical}
+\addbibresource{ref.bib}
+
+
+\begin{document}
+
+\begin{abstract}
+本文是参赛队（编号 MC1111111）的 AI 工具使用详情说明。文档将列出论文撰写过程中的 AI 工具的使用详情。
+% 以及我们对 AI 生成内容进行处理后应用到论文的核心步骤。
+\end{abstract}
+
+
+% 取消目录页码
+\tableofcontents\newpage
+\clearpage
+\pagenumbering{arabic}
+\pagestyle{fancy}
+
+\section{格式说明}
+
+在后文中，深灰色背景的文字是我们提供给 AI 的提示词，框起来的具有浅灰色背景的文字是 AI 给的回答（均为 Markdown 语言，已经过渲染）。
+
+给 AI （llm）提示词的时候注意不要让它使用 Unicode ，而是应该让它输出 Markdown 。因为你的 \LaTeX{} 编译器可能默认不支持某些 4 字节 UTF-8 字符。
+
+注意 multicols 环境中不能使用浮动体，如果 pandoc 转换的表格用了 longtable 之类的东西，自己改或者让 AI 帮你改。参阅 \inline{雅可比矩阵介绍.tex} 和 \inline{雅可比矩阵.md} ，并留意 \inline{雅可比矩阵介绍.tex} 中被注释的表格。此外， multicols 环境内不支持 breakable 的盒子，这一点要么不要用 multicols （dialog 环境的可选参数为 true 表示使用 multicols 环境），要么不用我提供的 dialog 环境。
+
+想改 markdown 的显示样式，自己改 \inline{Preamble for Pandoc.tex} 。有一些东西，比如 Markdown 的分割线 \inline{---} 是直接定义在 Pandoc 输出的 tex 里的，即
+\begin{verbatim}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\end{verbatim}
+想改的话可以改 \inline{ConvertMdToTex.py} 。
+
+% 关于 \verb|\additionalSectoin| 系列命令产生的标题大小不受字号命令影响的问题，交给读者解决。这里提供两种思路：
+% \begin{enumerate}
+%   \item 重新定义 \lstinline|\additionalSection| 系列命令，使得它们不再依赖 \lstinline|\section*| 系列命令，而是简单地使用外部提供的字号并给必选参数加个 \lstinline|\textbf| 。
+%   \item 
+% \end{enumerate}
+
+如果对这个 AI 工具使用详情有强迫症的话自己改 ConvertToTex.py ，反正我不想花那么多精力调这个东西。不值得。
+
+\section{雅可比矩阵的介绍}
+
+我们借助 Deepseek \cite{deepseek} 模型整理了关于雅可比矩阵的内容。
+
+\begin{dialog}[介绍一下雅可比矩阵][false]
+\input{dialog with AI/雅可比矩阵介绍.tex}
+\end{dialog}
+
+\section{雅可比矩阵的介绍2}
+
+我们借助 Deepseek \cite{deepseek} 模型整理了关于雅可比矩阵的内容。
+
+\begin{dialog}[介绍一下雅可比矩阵][true]
+\zihao{7}
+\input{dialog with AI/雅可比矩阵介绍.tex}
+\end{dialog}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{参考文献}
+% \bibliography{ref}
+\printbibliography[title={参考文献}] % 输出列表
+
+\end{document}
+

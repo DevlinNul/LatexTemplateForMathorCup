@@ -1,0 +1,62 @@
+\begingroup
+\setlength{\columnseprule}{0pt}
+\begin{multicols}{2}
+\begin{minted}[fontsize=\tiny,linenos, numbersep=0.2em,frame=single]{python}
+# -*- coding: utf-8 -*-
+from janim.imports import *
+
+
+class Introduction(MyTimeline, SubtitleTemplate2):
+    AUDIOS_SUBDIR = "Introduction"
+    name = "Introduction"
+
+    def construct(self):
+        super().construct()
+        dot_a = Dot(LEFT * 5, color=RED)
+        text_a = TypstMath(R"A", color=RED)
+        dot_b = Dot(RIGHT * 1, color=BLUE)
+        text_b = TypstMath(R"B", color=BLUE)
+        auxiliary_circle = Circle(color=WHITE)
+        vec_a = np.array((1, 0, 0))
+
+class Introduction(MyTimeline, SubtitleTemplate2):
+    AUDIOS_SUBDIR = "Introduction"
+    name = "Introduction"
+
+    def construct(self):
+        super().construct()
+        dot_a = Dot(LEFT * 5, color=RED)
+        text_a = TypstMath(R"A", color=RED)
+        dot_b = Dot(RIGHT * 1, color=BLUE)
+        text_b = TypstMath(R"B", color=BLUE)
+        auxiliary_circle = Circle(color=WHITE)
+        vec_a = np.array((1, 0, 0))
+
+class Introduction(MyTimeline, SubtitleTemplate2):
+    AUDIOS_SUBDIR = "Introduction"
+    name = "Introduction"
+
+    def construct(self):
+        super().construct()
+        dot_a = Dot(LEFT * 5, color=RED)
+        text_a = TypstMath(R"A", color=RED)
+        dot_b = Dot(RIGHT * 1, color=BLUE)
+        text_b = TypstMath(R"B", color=BLUE)
+        auxiliary_circle = Circle(color=WHITE)
+        vec_a = np.array((1, 0, 0))
+
+class Introduction(MyTimeline, SubtitleTemplate2):
+    AUDIOS_SUBDIR = "Introduction"
+    name = "Introduction"
+
+    def construct(self):
+        super().construct()
+        dot_a = Dot(LEFT * 5, color=RED)
+        text_a = TypstMath(R"A", color=RED)
+        dot_b = Dot(RIGHT * 1, color=BLUE)
+        text_b = TypstMath(R"B", color=BLUE)
+        auxiliary_circle = Circle(color=WHITE)
+        vec_a = np.array((1, 0, 0))
+\end{minted}
+\end{multicols}
+\endgroup

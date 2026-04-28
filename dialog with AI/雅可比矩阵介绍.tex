@@ -1,0 +1,210 @@
+以下是关于\textbf{雅可比矩阵}的详细介绍，使用 Markdown 格式。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\additionalSection{雅可比矩阵（Jacobian
+Matrix）}\label{ux96c5ux53efux6bd4ux77e9ux9635jacobian-matrix}
+
+雅可比矩阵是多元微积分中的核心概念，可以看作\textbf{多元函数的一阶导数矩阵}。它描述了向量值函数在某一点附近如何随输入变化而变化。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\additionalSubsection{1. 定义}\label{ux5b9aux4e49}
+
+设有一个函数
+
+\[
+\mathbf{f}: \mathbb{R}^n \to \mathbb{R}^m, \quad
+\mathbf{y} = \mathbf{f}(\mathbf{x}), \quad
+\mathbf{x} = (x_1, x_2, \dots, x_n),\quad
+\mathbf{y} = (y_1, y_2, \dots, y_m)
+\]
+
+其中每个分量 \(y_i = f_i(\mathbf{x})\)。则 \textbf{雅可比矩阵} \(J\)
+是一个 \(m \times n\) 的矩阵，其第 \(i\) 行第 \(j\) 列元素为：
+
+\[
+J_{ij} = \frac{\partial y_i}{\partial x_j}
+\]
+
+完整写出来：
+
+\[
+J = \begin{bmatrix}
+\frac{\partial y_1}{\partial x_1} & \frac{\partial y_1}{\partial x_2} & \cdots & \frac{\partial y_1}{\partial x_n} \\
+\frac{\partial y_2}{\partial x_1} & \frac{\partial y_2}{\partial x_2} & \cdots & \frac{\partial y_2}{\partial x_n} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial y_m}{\partial x_1} & \frac{\partial y_m}{\partial x_2} & \cdots & \frac{\partial y_m}{\partial x_n}
+\end{bmatrix}
+\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\additionalSubsection{2.
+几何与物理意义}\label{ux51e0ux4f55ux4e0eux7269ux7406ux610fux4e49}
+
+\additionalSubsubsection{局部线性近似}\label{ux5c40ux90e8ux7ebfux6027ux8fd1ux4f3c}
+
+在点 \(\mathbf{p}\) 附近，函数可以近似为：
+
+\[
+\mathbf{f}(\mathbf{p} + \Delta \mathbf{x}) \approx \mathbf{f}(\mathbf{p}) + J(\mathbf{p}) \cdot \Delta \mathbf{x}
+\]
+
+即雅可比矩阵给出了该点处的\textbf{最佳线性逼近}。
+
+\additionalSubsubsection{\texorpdfstring{面积/体积伸缩（当
+\(m = n\)）}{面积/体积伸缩（当 m = n）}}\label{ux9762ux79efux4f53ux79efux4f38ux7f29ux5f53-m-n}
+
+如果 \(m = n\)，雅可比矩阵是方阵，其行列式称为 \textbf{雅可比行列式}
+\(\det(J)\)。在坐标变换中，它表示局部体积（或面积）的缩放因子。例如极坐标变换：
+
+\[
+(x, y) = (r\cos\theta,\; r\sin\theta)
+\] \[
+\det(J) = r \quad \Rightarrow \quad dx\,dy = r\,dr\,d\theta
+\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\additionalSubsection{3. 特殊情形}\label{ux7279ux6b8aux60c5ux5f62}
+
+% {\def\LTcaptype{none} % do not increment counter
+% \begin{longtable}[]{@{}
+%   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2727}}
+%   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7273}}@{}}
+% \toprule\noalign{}
+% \begin{minipage}[b]{\linewidth}\raggedright
+% 情形
+% \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+% 雅可比矩阵退化为
+% \end{minipage} \\
+% \midrule\noalign{}
+% \endhead
+% \bottomrule\noalign{}
+% \endlastfoot
+% \textbf{标量函数} \(f: \mathbb{R}^n \to \mathbb{R}\) & 行向量，即
+% \textbf{梯度} \(\nabla f\) \\
+% \textbf{向量值函数} \(\mathbf{f}: \mathbb{R} \to \mathbb{R}^m\) &
+% 列向量，即各分量的普通导数 \\
+% \textbf{规范映射} \(\mathbf{f}: \mathbb{R}^n \to \mathbb{R}^n\)
+% 且为线性变换 & 常数矩阵（即变换矩阵本身） \\
+% \end{longtable}
+% }
+
+\begin{tabular}{|l|p{8cm}|}
+\hline
+\textbf{领域} & \textbf{用途} \\
+\hline
+优化 & 梯度下降法（雅可比→梯度） \\
+\hline
+机器人学 & 关节速度与末端执行器速度之间的映射（运动学雅可比） \\
+\hline
+几何/物理 & 坐标变换中的体积元（例：极坐标 $\diff x\diff y = r \diff r \diff\theta$，雅可比行列式为 $r$） \\
+\hline
+数值计算 & 牛顿法解方程组（雅可比矩阵用于线性化） \\
+\hline
+深度学习 & 反向传播本质上就是在计算雅可比矩阵的乘积 \\
+\hline
+\end{tabular}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\additionalSubsection{4. 典型应用}\label{ux5178ux578bux5e94ux7528}
+
+% {\def\LTcaptype{none} % do not increment counter
+% \begin{longtable}[]{@{}ll@{}}
+% \toprule\noalign{}
+% 领域 & 用途 \\
+% \midrule\noalign{}
+% \endhead
+% \bottomrule\noalign{}
+% \endlastfoot
+% \textbf{优化} & 梯度下降法中，梯度即雅可比（标量情形） \\
+% \textbf{机器人学} & 运动学雅可比：关节速度 → 末端执行器速度 \\
+% \textbf{几何与物理} & 坐标变换中的体积元（雅可比行列式） \\
+% \textbf{数值计算} & 牛顿法解非线性方程组：利用雅可比线性化 \\
+% \textbf{深度学习} & 反向传播算法本质上是雅可比矩阵的链式乘积 \\
+% \end{longtable}
+% }
+
+\begin{tabular}{ll}
+\toprule
+\textbf{领域} & \textbf{用途} \\
+\midrule
+优化 & 梯度下降法中，梯度即雅可比（标量情形） \\
+机器人学 & 运动学雅可比：关节速度 $rightarrow$ 末端执行器速度 \\
+几何与物理 & 坐标变换中的体积元（雅可比行列式） \\
+数值计算 & 牛顿法解非线性方程组：利用雅可比线性化 \\
+深度学习 & 反向传播算法本质上是雅可比矩阵的链式乘积 \\
+\bottomrule
+\end{tabular}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\additionalSubsection{5. 例子}\label{ux4f8bux5b50}
+
+\additionalSubsubsection{\texorpdfstring{例1：极坐标变换（\(\mathbb{R}^2 \to \mathbb{R}^2\)）}{例1：极坐标变换（\textbackslash mathbb\{R\}\^{}2 \textbackslash to \textbackslash mathbb\{R\}\^{}2）}}\label{ux4f8b1ux6781ux5750ux6807ux53d8ux6362mathbbr2-to-mathbbr2}
+
+\[
+f(r,\theta) = (r\cos\theta,\; r\sin\theta)
+\] \[
+J = \begin{bmatrix}
+\cos\theta & -r\sin\theta \\
+\sin\theta &  r\cos\theta
+\end{bmatrix},\quad \det(J) = r
+\]
+
+\additionalSubsubsection{\texorpdfstring{例2：简单非线性映射（\(\mathbb{R}^2 \to \mathbb{R}^2\)）}{例2：简单非线性映射（\textbackslash mathbb\{R\}\^{}2 \textbackslash to \textbackslash mathbb\{R\}\^{}2）}}\label{ux4f8b2ux7b80ux5355ux975eux7ebfux6027ux6620ux5c04mathbbr2-to-mathbbr2}
+
+\[
+f(x,y) = (x^2 y,\; x + y^3)
+\] \[
+J = \begin{bmatrix}
+2xy & x^2 \\
+1   & 3y^2
+\end{bmatrix}
+\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\additionalSubsection{6.
+与黑塞矩阵的区别}\label{ux4e0eux9ed1ux585eux77e9ux9635ux7684ux533aux522b}
+
+% {\def\LTcaptype{none} % do not increment counter
+% \begin{longtable}[]{@{}lll@{}}
+% \toprule\noalign{}
+% 矩阵 & 阶数 & 含义 \\
+% \midrule\noalign{}
+% \endhead
+% \bottomrule\noalign{}
+% \endlastfoot
+% \textbf{雅可比矩阵} & 一阶偏导 & 局部线性变化率 \\
+% \textbf{黑塞矩阵} & 二阶偏导 & 局部曲率（仅用于标量函数） \\
+% \end{longtable}
+% }
+
+\begin{tabular}{lll}
+\toprule
+矩阵 & 阶数 & 含义 \\
+\midrule
+雅可比矩阵 & 一阶偏导 & 局部线性变化率 \\
+黑塞矩阵 & 二阶偏导 & 局部曲率（仅用于标量函数） \\
+\bottomrule
+\end{tabular}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\additionalSubsection{总结}\label{ux603bux7ed3}
+
+\begin{itemize}
+\tightlist
+\item
+  雅可比矩阵是多元向量值函数的\textbf{一阶导数矩阵}
+\item
+  提供局部线性近似，是微分、几何、数值计算与工程中的基础工具
+\item
+  当输出为标量时退化为梯度；当输入输出维度相同时，其行列式表示空间伸缩比
+\end{itemize}
+
+如果你对某个具体应用（如机器人运动学或坐标变换）有更深入的问题，欢迎继续提问！

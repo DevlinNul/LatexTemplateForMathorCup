@@ -1,0 +1,502 @@
+%==============  MyTemplate.sty  ==============%
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesExplPackage{MyTemplate}{2025-12-04}{2.0}
+  {Safe personal utility macros}
+
+%=================  选项处理  =================%
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{family = MYTMP, prefix = MYTMP@}
+
+\DeclareBoolOption[false]{multicol}
+\DeclareBoolOption[false]{minted}
+\DeclareBoolOption[false]{geometry}
+\ProcessKeyvalOptions*
+
+%=================  引擎检测与 fontspec  =================%
+\sys_if_engine_xetex:T
+  {
+    \RequirePackage{fontspec}
+    \setmainfont{Times~New~Roman}
+    \setsansfont{Arial}
+    \setmonofont{Consolas}
+  }
+\sys_if_engine_luatex:T
+  {
+    \RequirePackage{fontspec}
+    \setmainfont{Times~New~Roman}
+    \setsansfont{Arial}
+    \setmonofont{Consolas}
+  }
+
+%=================  基础数学与符号  =================%
+\RequirePackage{amsmath,amssymb,mathtools,extarrows,amsthm}
+
+%=================  工具包  =================%
+% \RequirePackage{xspace}
+\RequirePackage{physics}
+\RequirePackage{siunitx}                 % 加载 siunitx，定义 \qty
+% 将 physics 的 \qty 命令重命名为 \lr ，并弃用physics宏包的qty命令，使用siuintx宏包的qty命令
+\let\lr\qty                          % 将 physics 的 \qty 重命名为 \lr
+\renewcommand\qty{\textcolor{red}{\text{Don't\ use\ qty,\ lr\ instead.}}}
+% \RequirePackage{physics2}
+% \usephysicsmodule{ab}           % 加载自动括号功能
+% \usephysicsmodule{ab.legacy}
+% \usephysicsmodule{braket}       % 狄拉克符号
+% \usephysicsmodule{diagmat}      % 对角矩阵
+% \usephysicsmodule{xmat}         % 矩阵快捷方式
+\RequirePackage{lmodern}
+\RequirePackage{relsize}
+\RequirePackage{xcolor}
+\RequirePackage{etoolbox}
+\RequirePackage{bookmark}
+\RequirePackage{graphicx}
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins,breakable,theorems}
+\RequirePackage{tabularx,booktabs}
+% \RequirePackage{listings}
+\RequirePackage{zref-base,zref-user}
+\RequirePackage{refcount}  % 添加refcount包来安全获取页码
+% \lstset{basicstyle=\ttfamily,columns=flexible}
+
+%=================  页面/分栏选项  =================%
+\ifMYTMP@multicol
+  \RequirePackage{multicol}
+  \setlength{\columnseprule}{0.4pt}
+  \setlength{\columnsep}{2em}
+\fi
+
+\ifMYTMP@geometry
+  \RequirePackage{geometry}
+  \geometry{
+    a4paper,
+    top=8mm,
+    bottom=4mm,
+    left=12mm,
+    right=12mm,
+    headheight=25pt,
+    headsep=8mm,
+    footskip=15mm,
+    includehead,
+    includefoot}
+\fi
+
+%=================  颜色与 hyperref  =================%
+\definecolor{mylink}{RGB}{0,82,155}
+\RequirePackage{hyperref}
+% \hypersetup{colorlinks=true,urlcolor=mylink}
+
+%=================  必须在 hyperref 之后  =================%
+\RequirePackage{cleveref}
+
+%=================  shell-escape 检测  =================%
+\ifMYTMP@minted
+  \RequirePackage{minted}
+  \RequirePackage{pdftexcmds}
+  \makeatletter
+  \ifnum\pdf@shellescape=\@ne\else
+    \PackageError{MyTemplate}
+      {--shell-escape required for minted}
+      {Please compile with:  lualatex -shell-escape  or  xelatex -shell-escape}
+  \fi
+  \makeatother
+\fi
+
+%=================  数学运算符  =================%
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\arcsinh}{arcsinh}
+\DeclareMathOperator{\arccosh}{arccosh}
+\DeclareMathOperator{\arctanh}{arctanh}
+\DeclareMathOperator{\arccoth}{arccoth}
+\DeclareMathOperator{\arcsech}{arcsech}
+\DeclareMathOperator{\arccsch}{arccsch}
+\DeclareMathOperator{\ld}{ld}
+\DeclareMathOperator{\Cdot}{\mathbin{\vcenter{\hbox{\scalebox{1.3}{$\cdot$}}}}}
+
+%=================  黑板粗体  =================%
+\cs_new_protected:Nn \__mytmp_bb:N { \ensuremath{\mathbb{#1}} }
+\ProvideDocumentCommand \N {}{\__mytmp_bb:N N}
+\ProvideDocumentCommand \Z {}{\__mytmp_bb:N Z}
+\ProvideDocumentCommand \Q {}{\__mytmp_bb:N Q}
+\ProvideDocumentCommand \R {}{\__mytmp_bb:N R}
+\ProvideDocumentCommand \C {}{\__mytmp_bb:N C}
+
+%=================  数学短语，可用与正文  =================%
+\ProvideDocumentCommand \doesNotExist     {}{\ensuremath{\mathrm{DNE}}}
+\ProvideDocumentCommand \LHS              {}{\ensuremath{\mathrm{LHS}}}
+\ProvideDocumentCommand \RHS              {}{\ensuremath{\mathrm{RHS}}}
+\ProvideDocumentCommand \almostEverywhere {}{\ensuremath{\mathrm{a.e.}}}
+\ProvideDocumentCommand \almostSurely     {}{\ensuremath{\mathrm{a.s.}}}
+
+% %=================  文本缩写  =================%
+% \cs_new_protected:Nn \__mytmp_text_only:
+%   {
+%     \mode_if_math:T
+%       {
+%         \msg_error:nnn{MyTemplate}{text-only}{\exp_not:N \CurrentCommand}
+%       }
+%   }
+% \msg_new:nnn {MyTemplate} {text-only}
+%   {Command~\token_to_str:N #1~is~only~allowed~in~text~mode.}
+
+% \cs_new_protected:Nn \__mytmp_text_abbr:n
+%   {
+%     \__mytmp_text_only:
+%     \textnormal{#1}~   % 显式加 tie 空格，比 \xspace 安全
+%   }
+
+\NewDocumentCommand \suchThat {}{\ensuremath{\mathrm{s.t.}}}
+\NewDocumentCommand \subjectTo{}{\ensuremath{\mathrm{subject\ to}}}
+\NewDocumentCommand \eg       {}{\ensuremath{\mathrm{e.g.}}}
+\NewDocumentCommand \ie       {}{\ensuremath{\mathrm{i.e.}}}
+\NewDocumentCommand \withoutLossOfGenerality {}{\ensuremath{\mathrm{w.l.o.g.}}}
+\NewDocumentCommand \etal     {}{\ensuremath{\mathrm{et~al.}}}
+\NewDocumentCommand \resp     {}{\ensuremath{\mathrm{resp.}}}
+\NewDocumentCommand \viz      {}{\ensuremath{\mathrm{viz.}}}
+\NewDocumentCommand \aka      {}{\ensuremath{\mathrm{a.k.a.}}}
+
+%=================  实用符号  =================%
+\NewDocumentCommand \diff {m}{\mathop{}\!\mathrm{d}#1}
+\NewDocumentCommand \perm {m m}{\mathrm{A}\sp{#2}\sb{#1}}
+\NewDocumentCommand \comb {m m}{\mathrm{C}\sp{#2}\sb{#1}}
+\NewDocumentCommand \ii   {}{\mathrm{i}}
+\NewDocumentCommand \e    {}{\mathrm{e}}
+\NewDocumentCommand \ee   {}{\mathrm{e}}
+\NewDocumentCommand \sgn  {m}{\mathop{}\!\mathrm{sgn}\lr(#1)}
+\NewDocumentCommand \na   {}{\text{N/A}}
+
+%=================  伪章节  =================%
+% 章节级：居中、粗体、比当前字号大 2 级
+\NewDocumentCommand \additionalSection {m}{%
+  \par
+  \vspace{\baselineskip}%
+  {\centering\bfseries\larger[2] #1\par}%
+  \vspace{\baselineskip}%
+  \ignorespaces
+}
+% 子章节：左对齐、粗体、比当前字号大 1 级
+\NewDocumentCommand \additionalSubsection {m}{%
+  \par
+  \vspace{0.7\baselineskip}%
+  {\bfseries\larger #1\par}%
+  \vspace{0.5\baselineskip}%
+  \ignorespaces
+}
+% 子子章节：左对齐、粗体（与当前字号相同，仅加粗）
+\NewDocumentCommand \additionalSubsubsection {m}{%
+  \par
+  \vspace{0.5\baselineskip}%
+  {\bfseries #1\par}%
+  \vspace{0.3\baselineskip}%
+  \ignorespaces
+}
+% \NewDocumentCommand \additionalSection      {m}{\par\nopagebreak[3]\section*{#1}\nopagebreak[3]\par}
+% \NewDocumentCommand \additionalSubsection   {m}{\par\nopagebreak[3]\subsection*{#1}\nopagebreak[3]\par}
+% \NewDocumentCommand \additionalSubsubsection{m}{\par\nopagebreak[3]\subsubsection*{#1}\nopagebreak[3]\par}
+
+
+
+%=================  题目、解答、qed  =================%
+\newtcolorbox{question}{
+  breakable,
+  colback=gray!8,
+  colframe=gray!40,
+  boxrule=0.4pt,
+  left=6pt,right=6pt,top=4pt,bottom=4pt,
+  before~skip=4pt~plus~1pt,
+  after~skip=4pt~plus~1pt
+}
+
+\NewDocumentCommand \printsolution{}{\par\smallskip\noindent\textcolor{mylink}{\textbf{解:}}\quad}
+\NewDocumentCommand \myqed   {}{\nopagebreak\noindent\hspace{\linewidth-2em}\qedsymbol}
+
+%=================  行内代码盒子  =================%
+\newtcbox{\inline}{
+  on~line,
+  boxsep=2pt,left=1pt,right=1pt,top=0pt,bottom=0pt,
+  colback=gray!12,colframe=gray!50,
+  boxrule=0.4pt,arc=2pt,
+  fontupper=\ttfamily
+}
+
+%=================  颜色定义  =================%
+\definecolor{deepblue}{HTML}{003366}
+\definecolor{lightblue}{HTML}{E5F6FF}
+\definecolor{deepgreen}{HTML}{006633}
+\definecolor{lightgreen}{HTML}{E5F6E5}
+\definecolor{deeppurple}{HTML}{660066}
+\definecolor{lightpurple}{HTML}{F6E5F6}
+\definecolor{deepred}{HTML}{990000}
+\definecolor{lightred}{HTML}{FFE5E5}
+\definecolor{deeporange}{HTML}{CC6600}
+\definecolor{lightorange}{HTML}{FFF6E5}
+\definecolor{deepgray}{HTML}{333333}
+\definecolor{lightgray}{HTML}{F6F6F6}
+\definecolor{deepbrown}{HTML}{8B4513}
+\definecolor{lightbrown}{HTML}{FFE4B5}
+\definecolor{lightyellow}{HTML}{FFFFE0}
+\definecolor{darkyellow}{HTML}{CCCC00}
+\definecolor{lightcyan}{HTML}{E0FFFF}
+\definecolor{darkcyan}{HTML}{008B8B}
+\definecolor{lightpink}{HTML}{FFB6C1}
+\definecolor{darkpink}{HTML}{FF1493}
+\definecolor{lavender}{HTML}{E6E6FA}
+\definecolor{thistle}{HTML}{D8BFD8}
+\definecolor{darkblue}{HTML}{00008B}
+\definecolor{mediumgray}{HTML}{D3D3D3}
+\definecolor{darkgray}{HTML}{A9A9A9}
+
+%=================  定理环境  =================%
+\newcounter{theoremcounter}[section]
+
+\newtcbtheorem[use~counter=theoremcounter,number~within=subsubsection]{theorem}{定理}{
+    colback=lightgreen,
+    colframe=deepgreen,
+    colbacktitle=deepgreen,
+    coltitle=white,
+    fonttitle=\upshape\color{white},
+    fontupper=\rmfamily,
+    separator~sign~none,
+    top=8pt,
+    attach~boxed~title~to~top~left={yshift=-2mm,xshift=5mm},
+    description~delimiters={~}{~},
+    enhanced
+}{theorem}
+
+\newtcbtheorem[use~counter=theoremcounter,number~within=subsubsection]{lemma}{引理}{
+    colback=lightpurple,
+    colframe=deeppurple,
+    colbacktitle=deeppurple,
+    coltitle=white,
+    fonttitle=\upshape\color{white},
+    fontupper=\rmfamily,
+    separator~sign~none,
+    top=8pt,
+    attach~boxed~title~to~top~left={yshift=-2mm,xshift=5mm},
+    description~delimiters={~}{~},
+    enhanced
+}{lemma}
+
+\newtcbtheorem[number~within=subsubsection]{definition}{定义}{
+    colback=lightred,
+    colframe=deepred,
+    colbacktitle=deepred,
+    coltitle=white,
+    fonttitle=\upshape\color{white},
+    fontupper=\rmfamily,
+    separator~sign~none,
+    top=8pt,
+    attach~boxed~title~to~top~left={yshift=-2mm,xshift=5mm},
+    description~delimiters={~}{~},
+    enhanced
+}{definition}
+
+\newcounter{examplecounter}[subsubsection]
+\newtcbtheorem[use~counter=examplecounter,number~within=subsubsection]{example}{例题}{
+    colback=lightblue,
+    colframe=deepblue,
+    colbacktitle=deepblue,
+    coltitle=white,
+    fonttitle=\upshape\color{white},
+    fontupper=\rmfamily,
+    separator~sign~none,
+    top=8pt,
+    attach~boxed~title~to~top~left={yshift=-2mm,xshift=5mm},
+    description~delimiters={~}{~},
+    enhanced
+}{example}
+
+\newtcbtheorem[number~within=subsubsection]{conclusion}{结论}{
+    colback=lightorange,
+    colframe=deeporange,
+    colbacktitle=deeporange,
+    coltitle=white,
+    fonttitle=\upshape\color{white},
+    fontupper=\rmfamily,
+    separator~sign~none,
+    top=8pt,
+    attach~boxed~title~to~top~left={yshift=-2mm,xshift=5mm},
+    description~delimiters={~}{~},
+    enhanced
+}{conclusion}
+
+\newtcbtheorem[number~within=subsubsection]{property}{性质}{
+    colback=lightgray,
+    colframe=deepgray,
+    colbacktitle=deepgray,
+    coltitle=white,
+    fonttitle=\upshape\color{white},
+    fontupper=\rmfamily,
+    separator~sign~none,
+    top=8pt,
+    attach~boxed~title~to~top~left={yshift=-2mm,xshift=5mm},
+    description~delimiters={~}{~},
+    enhanced
+}{property}
+
+\newtcbtheorem[number~within=subsubsection]{criterion}{准则}{
+    colback=lightbrown,
+    colframe=deepbrown,
+    colbacktitle=deepbrown,
+    coltitle=white,
+    fonttitle=\upshape\color{white},
+    fontupper=\rmfamily,
+    separator~sign~none,
+    top=8pt,
+    attach~boxed~title~to~top~left={yshift=-2mm,xshift=5mm},
+    description~delimiters={~}{~},
+    enhanced
+}{criterion}
+
+\newtcbtheorem[use~counter=theoremcounter,number~within=subsubsection]{corollary}{推论}{
+    colback=lightcyan,
+    colframe=darkcyan,
+    colbacktitle=darkcyan,
+    coltitle=white,
+    fonttitle=\upshape\color{white},
+    fontupper=\rmfamily,
+    separator~sign~none,
+    top=8pt,
+    attach~boxed~title~to~top~left={yshift=-2mm,xshift=5mm},
+    description~delimiters={~}{~},
+    enhanced
+}{corollary}
+
+%=================  solution 环境（支持可选标签参数） =================%
+\makeatletter
+% 安全的页码提取宏
+\newcommand*\boxpages[1]{%
+  % 初始化变量
+  \def\startpage{??}%
+  \def\endpage{??}%
+  \def\temp@start{0}%
+  \def\temp@end{0}%
+  
+  % 尝试提取起始页码
+  \ifcsname r@\detokenize{#1}\endcsname
+    % 使用 \getpagerefnumber 获取页码
+    \edef\temp@start{\getpagerefnumber{\detokenize{#1}}}%
+    % 检查是否是有效的页码（大于0）
+    \ifnum\temp@start>0\relax
+      \edef\startpage{\temp@start}%
+    \else
+      \def\startpage{??}%
+    \fi
+  \fi
+  
+  % 尝试提取结束页码
+  \ifcsname r@\detokenize{#1-end}\endcsname
+    \edef\temp@end{\getpagerefnumber{\detokenize{#1-end}}}%
+    \ifnum\temp@end>0\relax
+      \edef\endpage{\temp@end}%
+    \else
+      \def\endpage{??}%
+    \fi
+  \fi
+  
+  % 输出页码范围（使用字符串比较）
+  \def\temp@qmark{??}%
+  \ifx\startpage\temp@qmark
+    \ifx\endpage\temp@qmark
+      ??%
+    \else
+      ??--\endpage
+    \fi
+  \else
+    \ifx\endpage\temp@qmark
+      \startpage\,??%
+    \else
+      % 都是有效数字，进行数值比较
+      \ifnum\startpage=\endpage\relax
+        p.\,\startpage
+      \else
+        pp.\,\startpage--\endpage
+      \fi
+    \fi
+  \fi
+}
+
+% 处理带空格的标签
+\newcommand{\safelabel}[1]{%
+  \begingroup
+  \edef\x{\endgroup\noexpand\label{\detokenize{#1}}}\x
+}
+
+% solution 环境 - 支持可选标签参数
+\NewDocumentEnvironment{solution}{O{解} o}
+  {%
+    % 检查第二个参数是否提供了非空值
+    \IfValueTF{#2}{%
+      % 提供了第二个参数，检查是否为空值
+      \def\@tmp@arg{#2}%
+      \ifx\@tmp@arg\@empty
+        % 空值：不分配标签
+        \begin{tcolorbox}[
+          breakable,
+          colback  = gray!5,
+          colframe = gray!80,
+          colbacktitle = gray!80,
+          coltitle = black,
+          title    = {#1},
+        ]%
+      \else
+        % 非空值：分配标签（支持空格和冒号）
+        \begin{tcolorbox}[
+          breakable,
+          colback  = gray!5,
+          colframe = gray!80,
+          colbacktitle = gray!80,
+          coltitle = black,
+          title    = {#1},
+          after    = {\safelabel{#2-end}},
+        ]%
+        \safelabel{#2}%
+      \fi
+    }{%
+      % 没有提供第二个参数：不分配标签
+      \begin{tcolorbox}[
+        breakable,
+        colback  = gray!5,
+        colframe = gray!80,
+        colbacktitle = gray!80,
+        coltitle = black,
+        title    = {#1},
+      ]%
+    }%
+  }
+  {\end{tcolorbox}}
+\makeatother
+
+%=================  传统样式环境  =================%
+\newtheoremstyle{plain-chinese}%
+  {6pt}%
+  {6pt}%
+  {\songti}%
+  {}%
+  {\heiti}%
+  {.}%
+  {~}%
+  {}%
+\theoremstyle{plain-chinese}
+\newtheorem{remark}{注}[subsubsection]
+
+%=================  智能引用设置  =================%
+\AtBeginDocument{
+  \crefname{theorem}{定理}{定理}
+  \crefname{lemma}{引理}{引理}
+  \crefname{definition}{定义}{定义}
+  \crefname{example}{例题}{例题}
+  \crefname{conclusion}{结论}{结论}
+  \crefname{solution}{解}{解}
+  \crefname{remark}{注}{注}
+  \crefname{property}{性质}{性质}
+  \crefname{criterion}{准则}{准则}
+  \crefname{proof}{证明}{证明}
+  \crefname{figure}{图}{图}
+  \crefname{table}{表}{表}
+  \crefname{equation}{式}{式}
+  \crefname{chapter}{章}{章}
+  \crefname{section}{节}{节}
+  \crefname{subsection}{小节}{小节}
+  \crefname{subsubsection}{小小节}{小小节}
+}
+\endinput
