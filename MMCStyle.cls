@@ -62,7 +62,7 @@
 
 
 % \setCJKmainfont[Mapping=fullwidth-stop]{SimSun}
-\setmainfont{Times New Roman}
+% \setmainfont{Times New Roman}
 
 \def\bianhao#1{\gdef\@bianhao{#1}}
 \def\tihao#1{\gdef\@tihao{#1}}

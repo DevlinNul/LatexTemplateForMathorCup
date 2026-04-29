@@ -1,3 +1,16 @@
 _minted-article/
 _minted-Typing_Tutorial/
 *.pdf
+*.aux
+*.toc
+*.log
+*.fls
+*.out
+*.latexmk
+*.gz
+*.run.xml
+*.bbl
+*.blg
+*.fdb_latexmk
+*.bcf
+*.xdv
